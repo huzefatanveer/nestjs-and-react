@@ -1,0 +1,46 @@
+.admin-panel {
+    padding: 20px;
+    background-color: #f8f9fa; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+h2 {
+    margin-bottom: 20px;
+    color: #333; /* Dark text color */
+}
+
+ul {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+}
+
+li {
+    padding: 10px;
+    margin: 10px 0; /* Space between list items */
+    background-color: #ffffff; /* White background for list items */
+    border: 1px solid #dee2e6; /* Light border */
+    border-radius: 5px; /* Rounded corners */
+    display: flex; /* Use flexbox for layout */
+    justify-content: space-between; /* Space between email/role and buttons */
+    align-items: center; /* Center items vertically */
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Smooth background transition */
+}
+
+button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.alert {
+    margin-top: 20px;
+    color: red; /* Error alert color */
+}
