@@ -8,6 +8,7 @@ import { User } from './users/entities/user.Entity';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/entities/product.entity';
+import { MulterModule } from '@nestjs/platform-express';
 
 
 
@@ -19,6 +20,9 @@ import { Product } from './products/entities/product.entity';
       cache: true,
       isGlobal: true,
     }),
+    // MulterModule.register({
+    //   dest: '../uploads', // defines accessible route for uploaded files
+    // }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOST || 'localhost',

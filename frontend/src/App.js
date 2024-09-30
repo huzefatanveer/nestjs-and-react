@@ -4,6 +4,7 @@ import AdminPanel from './components/AdminPanel';
 import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
+import HomePage from './components/HomePage';
 
 const App = () => {
     const userRole = localStorage.getItem('role'); // Assuming the role is stored after login
@@ -13,7 +14,7 @@ const App = () => {
         <Router>
             <Routes>
                 {/* Redirect to the register page when the app starts */}
-                <Route path="/" element={<Navigate to="/register" />} />
+                <Route path="/" element={<HomePage/>} />
 
                 {/* Define the routes */}
                 <Route path="/register" element={<Register />} />

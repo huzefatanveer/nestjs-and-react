@@ -1,46 +1,48 @@
 .admin-panel {
     padding: 20px;
-    background-color: #f8f9fa; /* Light background color */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    background-color: #f9f9f9;
+    border-radius: 8px;
 }
 
-h2 {
+.add-product-form {
     margin-bottom: 20px;
-    color: #333; /* Dark text color */
 }
 
-ul {
-    list-style-type: none; /* Remove default list styles */
-    padding: 0; /* Remove default padding */
-}
-
-li {
-    padding: 10px;
-    margin: 10px 0; /* Space between list items */
-    background-color: #ffffff; /* White background for list items */
-    border: 1px solid #dee2e6; /* Light border */
-    border-radius: 5px; /* Rounded corners */
-    display: flex; /* Use flexbox for layout */
-    justify-content: space-between; /* Space between email/role and buttons */
-    align-items: center; /* Center items vertically */
+.add-product-form input,
+.add-product-form textarea {
+    display: block;
+    margin: 10px 0;
+    padding: 8px;
+    width: 100%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 button {
-    padding: 5px 10px;
-    background-color: #007bff; /* Bootstrap primary color */
+    padding: 10px 15px;
+    background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Smooth background transition */
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 button:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #218838;
 }
 
-.alert {
-    margin-top: 20px;
-    color: red; /* Error alert color */
+h2, h3 {
+    margin-bottom: 10px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
 }

@@ -23,7 +23,7 @@ export class AuthService {
         console.log( this.jwtService.sign(payload))
         console.log(user.role)
         return {
-            access_token: this.jwtService.sign(payload),
+            access_token: this.jwtService.sign(payload, {expiresIn: '1h'}),
             role: user.role,
             user: user
 
