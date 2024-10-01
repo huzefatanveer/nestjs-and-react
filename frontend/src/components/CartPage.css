@@ -1,0 +1,81 @@
+.cart-page {
+    padding: 20px;
+  }
+  
+  .cart-item-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .cart-item {
+    display: flex;
+    align-items: center;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+  }
+  
+  .cart-item-image {
+    width: 100px; /* Define a fixed width for the image container */
+    height: 100px; /* Define a fixed height for the image container */
+    object-fit: cover; /* Ensure the image covers the container while maintaining aspect ratio */
+    border-radius: 5px;
+    margin-right: 20px; /* Add some space between the image and the text */
+  }
+  
+  .cart-item-details {
+    display: flex;
+    flex-direction: column; /* Stack name and price vertically */
+    justify-content: center; /* Center the details vertically */
+  }
+  
+  .quantity-controls {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+  }
+  
+  .quantity-controls button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .quantity-controls button:disabled {
+    background-color: #ccc; /* Change color if the button is disabled */
+    cursor: not-allowed;
+  }
+  
+  .quantity-controls button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
+  
+  .quantity-controls .quantity-display {
+    margin: 0 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 15px;
+    cursor: pointer;
+    margin-left: 20px; /* Add space between quantity controls and remove button */
+  }
+  
+  .remove-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+  
+  .cart-item-details .btn {
+    margin-right: 10px;
+  }
+  

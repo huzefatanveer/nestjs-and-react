@@ -1,7 +1,7 @@
-// src/components/Register.js
+// src/components/Register.jsx
 import { useState } from 'react';
 import axios from 'axios';
-import './Register.css';  // Assuming you're adding CSS for styling
+import './Register.css';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
@@ -9,7 +9,6 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
-
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
@@ -25,16 +24,8 @@ const Register = () => {
         try {
             const response = await axios.post('http://localhost:3000/users', { email, password });
             console.log('Registration successful', response.data);
-            const { access_token, role } = response.data;
             setSuccess(true);
-            // You can redirect to login or dashboard here
-          //  localStorage.setItem('token', access_token); // Save token to localStorage
-            localStorage.setItem('role', role);
-            if (role === 'admin') {
-                navigate('/admin'); // Redirect to admin panel
-              } else {
-                navigate('/dashboard'); // Redirect to user dashboard
-              }
+            navigate('/login'); // Redirect to login after registration
         } catch (err) {
             console.error('Registration error', err.response?.data || err.message);
             setError('Registration failed. Please try again.');
@@ -63,11 +54,9 @@ const Register = () => {
                 />
                 <button type="submit">Register</button>
             </form>
+            <p>Already registered? <span onClick={() => navigate('/login')} style={{ cursor: 'pointer', color: 'blue' }}>Login here</span></p>
         </div>
     );
 };
 
 export default Register;
-
-
-
