@@ -2,13 +2,16 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { AuthLoginDto } from './auth-login.dto';
+import { OrdersService } from 'src/orders/orders.service';
 
 @Injectable()
 export class AuthService {
 
     constructor (
         private userService: UsersService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private ordersService: OrdersService
+
     ){}
 
     async login(authLoginDto: AuthLoginDto) {

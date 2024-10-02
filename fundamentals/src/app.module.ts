@@ -9,6 +9,9 @@ import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { Product } from './products/entities/product.entity';
 import { MulterModule } from '@nestjs/platform-express';
+import { OrdersModule } from './orders/orders.module';
+import { Order } from './orders/entities/order.entity';
+import { OrderProduct } from './orders/entities/order-product.entity';
 
 
 
@@ -30,11 +33,12 @@ import { MulterModule } from '@nestjs/platform-express';
       username: process.env.DB_USERNAME || 'root',  // Ensure this is set
       password: process.env.DB_PASSWORD || '',  // Ensure this is set
       database: process.env.DB_NAME || 'huz',  // Ensure this is set
-      entities: [User, Product],
+      entities: [User, Product, Order, OrderProduct],
       synchronize: true,
     }),
     AuthModule,
     ProductsModule,
+    OrdersModule,
 
 
     // TypeOrmModule.forRoot({

@@ -1,6 +1,7 @@
-import { BaseEntity, BeforeInsert, Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Role } from '../role.enum';
 import * as bcrypt from 'bcryptjs'
+import { Order } from "src/orders/entities/order.entity";
 @Entity()
 export class User extends BaseEntity {
     @PrimaryGeneratedColumn()
@@ -11,6 +12,12 @@ export class User extends BaseEntity {
 
     @Column ()
     password: string;
+
+    @Column({ nullable: true })
+    stripeCustomerId: string;
+
+    @OneToMany(() => Order, (order) => order.user)
+    orders: Order[];
 
     @Column({ type: 'enum', enum: Role, default: Role.User })
     role: Role; 

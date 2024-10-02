@@ -6,6 +6,7 @@ import { User } from './entities/user.Entity'
 import * as bcrypt from 'bcryptjs'
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './role.enum';
+import { OrdersService } from 'src/orders/orders.service';
 
 
 @Injectable()
@@ -14,6 +15,7 @@ export class UsersService {
 //     @InjectRepository(User)
 //     private usersRepository: Repository<User>,
 // ) {}
+constructor(private ordersService: OrdersService) {}
 
   async create(createUserDto: CreateUserDto) {
     const user = User.create(createUserDto);
@@ -52,7 +54,9 @@ export class UsersService {
 //     return this.usersRepository.save(user);
 // }
 
-
+// async getUserOrderHistory(userId: number) {
+//   return await this.ordersService.(userId); // Fetch orders for the user
+// }
 
   findAll() {
     return `This action returns all users`;
