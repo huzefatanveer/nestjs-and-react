@@ -28,8 +28,8 @@ export class Order {
   @Column()
   currency: string;
 
-  @Column()
-  shippingAddress: string;
+  // @Column()
+  // shippingAddress: string;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -15,6 +15,7 @@ async function bootstrap() {
     prefix: '/uploads',
   });
 
+  //app.use('/orders/webhook', bodyParser.raw({ type: 'application/json' }));
   
 
   await app.listen(3000);

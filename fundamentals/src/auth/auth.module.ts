@@ -20,7 +20,7 @@ import { OrdersModule } from 'src/orders/orders.module';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_SECRET') || 'pplucky1234',
-        signOptions: { expiresIn: '60s' },
+        signOptions: { expiresIn: '5h' },
       }),
       inject: [ConfigService],
     }),

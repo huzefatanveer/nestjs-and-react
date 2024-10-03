@@ -1,21 +1,61 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getItemsSelector, incrementItem, decrementItem, removeItem } from '../redux/slices/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './CartPage.css';
 
 const CartPage = () => {
   const cartItems = useSelector(getItemsSelector);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  // Calculate total price and number of items
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0); // Sum the quantity of all items
-  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0); // Multiply price by quantity
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) {
+      console.error('Cart is empty!');
+      return;
+    }
+
+    const orderItems = cartItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      quantity: item.quantity,
+      imageUrl: item.imageUrl,
+      description: item.description
+    }));
+
+    try {
+      const response = await axios.post('http://localhost:3000/orders', {
+        products: orderItems,
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        }
+      });
+      
+      const { clientSecret, orderId } = response.data;
+      
+      // Store clientSecret and orderId in localStorage
+      localStorage.setItem('clientSecret', clientSecret);
+      localStorage.setItem('orderId', orderId);
+
+      // Navigate to the checkout page
+      navigate('/checkout');
+    } catch (error) {
+      console.error('Error creating order:', error);
+    }
+  };
 
   return (
     <div className="cart-page">
       <h1>Your Cart</h1>
       <p>Total Items: {totalItems}</p>
-      <p>Total Price: ${totalPrice.toFixed(2)}</p> {/* Format totalPrice to 2 decimal places */}
+      <p>Total Price: ${totalPrice.toFixed(2)}</p>
       <ul className="cart-item-list">
         {cartItems.map((item, index) => {
           const imageUrl = `http://localhost:3000/uploads/${item.imageUrl}`;
@@ -25,8 +65,8 @@ const CartPage = () => {
               <div className="cart-item-details">
                 <p>{item.name}</p>
                 <p>Price: ${item.price}</p>
-                <p>Quantity: {item.quantity}</p> {/* Display quantity */}
-
+                <p>Quantity: {item.quantity}</p>
+                <p>Image url: {item.imageUrl}</p>
                 <div className="quantity-controls">
                   <button
                     onClick={() => dispatch(decrementItem({ name: item.name }))}
@@ -42,7 +82,6 @@ const CartPage = () => {
                     +
                   </button>
                 </div>
-
                 <button
                   onClick={() => dispatch(removeItem({ name: item.name }))}
                   className="btn btn-danger"
@@ -54,6 +93,11 @@ const CartPage = () => {
           );
         })}
       </ul>
+      {cartItems.length > 0 && (
+        <button className="btn btn-primary checkout-button" onClick={handleCheckout}>
+          Proceed to Checkout
+        </button>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +12,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { OrderProduct } from './orders/entities/order-product.entity';
+import { RawBodyMiddleware } from './raw-body.middleware';
 
 
 
@@ -55,4 +56,10 @@ import { OrderProduct } from './orders/entities/order-product.entity';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(RawBodyMiddleware)
+      .forRoutes('orders/webhook'); // Apply to the webhook route
+  }
+ }
