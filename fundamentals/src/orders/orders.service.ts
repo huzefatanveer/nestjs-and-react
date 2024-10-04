@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,7 @@ import { Stripe } from 'stripe'; // Install `stripe` package
 import { Product } from 'src/products/entities/product.entity'; // Import your Product entity
 @Injectable()
 export class OrdersService {
+  private readonly logger = new Logger(OrdersService.name);
   private stripe: Stripe;
 
   constructor(
@@ -32,44 +33,30 @@ export class OrdersService {
     );
 
     try {
-      // Create Stripe Payment Intent
-      const paymentIntent = await this.stripe.paymentIntents.create({
-        amount: Math.round(totalPrice * 100), // Stripe expects amount in cents
-        currency: 'usd',
-        metadata: { userId: userId.toString() },
-      });
-
-      console.log('Creating order for user ID:', { user: { id: userId } });
-
-      // console.log({
-      //   user: { id: userId },
-      //   totalPrice,
-      //   paymentIntentId: paymentIntent.id,
-      //   status: 'pending',
-      // });
-
       // Create a new order
       const order = this.orderRepository.create({
         user: { id: userId },
         totalPrice,
-        paymentIntentId: paymentIntent.id,
         status: 'pending',
       });
 
-      // Save the order
+      // Save the order to get an ID
       const savedOrder = await this.orderRepository.save(order);
 
-        console.log(products.map((product) =>
-          this.orderProductRepository.create({
-            order: savedOrder,
-            product: { id: product.id } as Product,
-            quantity: product.quantity,
-            unitPrice: product.price,
-            totalPrice: product.price * product.quantity,
-            name: product.name,
-            description: product.description,
-            imageUrl: product.imageUrl,
-          })))
+      // Create Stripe Payment Intent with orderId in metadata
+      const paymentIntent = await this.stripe.paymentIntents.create({
+        amount: Math.round(totalPrice * 100), // Stripe expects amount in cents
+        currency: 'usd',
+        metadata: { 
+          userId: userId.toString(),
+          orderId: savedOrder.id.toString(),
+        },
+      });
+
+      // Update the order with the PaymentIntent ID
+      savedOrder.paymentIntentId = paymentIntent.id;
+      await this.orderRepository.save(savedOrder);
+
       // Create order products
       const orderProducts = products.map((product) =>
         this.orderProductRepository.create({
@@ -117,12 +104,12 @@ export class OrdersService {
     return await this.orderRepository.find({ relations: ['orderProducts'] });
   }
 
-  async findOne(id: string) {
-    return await this.orderRepository.findOne({
-      where: { id }, // Pass the id directly if it's a string
-      relations: ['orderProducts'],
-    });
-  }
+  // async findOne(id: string) {
+  //   return await this.orderRepository.findOne({
+  //     where: { id }, // Pass the id directly if it's a string
+  //     relations: ['orderProducts'],
+  //   });
+  // }
 
   async update(id: string, updateOrderDto: UpdateOrderDto) {
     const order = await this.orderRepository.findOne({ where: { id } });
@@ -138,4 +125,16 @@ export class OrdersService {
     if (!order) throw new Error('Order not found');
     return this.orderRepository.remove(order);
   }
+
+  
+
+  async findOne(id: string) {
+    const order = await this.orderRepository.findOne({
+      where: { id },
+      relations: ['orderProducts'],
+    });
+    this.logger.log(`Retrieved order ${id} with status: ${order?.status}`);
+    return order;
+  }
+  
 }

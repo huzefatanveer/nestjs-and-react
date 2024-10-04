@@ -12,6 +12,7 @@ import CartPage from './components/CartPage';
 import CheckoutPage from './components/CheckoutForm';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import SuccessPage from './components/Success';
 
 const App = () => {
     const userRole = localStorage.getItem('role');
@@ -28,6 +29,7 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/checkout" element={<CheckoutPage />} />
+                    <Route path="/success" element={<SuccessPage />} />
                     <Route
                         path="/admin"
                         element={userRole === 'admin' ? <AdminPanel /> : <Login />}

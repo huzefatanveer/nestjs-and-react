@@ -1,10 +1,12 @@
-import { Controller, Post, Body, Patch, Param, Get, Delete, UseGuards, Headers, HttpCode, HttpStatus} from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Get, Delete, UseGuards, Headers, HttpCode, HttpStatus, RawBodyRequest,Req, Res } from '@nestjs/common';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard'; // Assuming you are using JWT-based auth
 import { CurrentUser } from '../auth/decorators/current-user.decorator'; // Custom decorator to get current user
+import * as express from 'express';
 import Stripe from 'stripe';
+import { ApiBadRequestResponse, ApiCreatedResponse } from '@nestjs/swagger';
 
 @Controller('orders')
 export class OrdersController {
@@ -81,36 +83,57 @@ export class OrdersController {
   }
 
   @Post('webhook')
-  @HttpCode(HttpStatus.OK)
-  async handleWebhook(@Body() body: any): Promise<void> {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2024-06-20',
-    });
-
-    const sig = body.headers['stripe-signature'];
-    let event;
+  @ApiCreatedResponse({ description: 'response here' })
+  @ApiBadRequestResponse({ description: 'Expectation Failed, Please try again' })
+  async handleWebhook(
+    @Req() req: RawBodyRequest<express.Request>,
+    @Res() res: express.Response
+  ) {
+    const signature = req.headers['stripe-signature'];
+    console.log('Received Stripe webhook with signature:', signature);
+    let event: Stripe.Event;
+    
+    console.log(this.stripe.webhooks.constructEvent(
+      req.rawBody,
+      signature,
+      process.env.STRIPE_EP_SIGNATURE
+    ))
 
     try {
-      // Use the Stripe SDK to construct the event
-      event = stripe.webhooks.constructEvent(body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+      event = this.stripe.webhooks.constructEvent(
+        req.rawBody,
+        signature,
+        process.env.STRIPE_EP_SIGNATURE
+      );
     } catch (err) {
-      console.error(`Webhook signature verification failed.`, err);
-      throw new Error('Webhook signature verification failed.');
+      console.error(`Webhook signature verification failed: ${err.message}`);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 
-    // Handle the event
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        const paymentIntent = event.data.object; // Contains a Stripe payment intent
-        await this.ordersService.updateOrderStatus(paymentIntent.id, 'succeeded');
-        break;
-      case 'payment_intent.payment_failed':
-        const failedPaymentIntent = event.data.object; // Contains a Stripe payment intent
-        await this.ordersService.updateOrderStatus(failedPaymentIntent.id, 'failed');
-        break;
-      // Handle other event types as needed
-      default:
-        console.log(`Unhandled event type ${event.type}`);
+    const paymentIntent = event.data.object as Stripe.PaymentIntent;
+
+    if (event.type === 'payment_intent.succeeded' || event.type === 'payment_intent.payment_failed') {
+      const orderId = paymentIntent.metadata.orderId;
+
+      if (!orderId) {
+        console.error('No orderId found in PaymentIntent metadata');
+        return res.status(400).send('No orderId found');
+      }
+
+      const order = await this.ordersService.findOne(orderId);
+
+      if (order) {
+        const newStatus = event.type === 'payment_intent.succeeded' ? 'completed' : 'failed';
+        order.status = newStatus;
+        await this.ordersService.updateOrderStatus(order.paymentIntentId, newStatus);
+        console.log(`Order ${order.id} status updated to ${newStatus}`);
+      } else {
+        console.error(`Order not found for orderId: ${orderId}`);
+        return res.status(404).send('Order not found');
+      }
     }
+
+    // Acknowledge receipt of event
+    res.json({ received: true });
   }
 }

@@ -1,0 +1,43 @@
+/* SuccessPage.css */
+.success-page {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 20px;
+    text-align: center;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .success-page h1 {
+    color: #4CAF50;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+  
+  .order-details {
+    text-align: left;
+  }
+  
+  .order-details h2 {
+    margin-bottom: 15px;
+    color: #333;
+  }
+  
+  .order-details ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .order-details ul li {
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+  }
+  
+  .order-details strong {
+    display: inline-block;
+    width: 120px;
+  }
+  

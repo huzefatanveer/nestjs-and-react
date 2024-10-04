@@ -19,8 +19,11 @@ const CartPage = () => {
       return;
     }
 
+
+    console.log({id: cartItems.id})
     const orderItems = cartItems.map(item => ({
       id: item.id,
+      
       name: item.name,
       price: item.price,
       quantity: item.quantity,
@@ -67,6 +70,7 @@ const CartPage = () => {
                 <p>Price: ${item.price}</p>
                 <p>Quantity: {item.quantity}</p>
                 <p>Image url: {item.imageUrl}</p>
+                <p>id: {item.id}</p>
                 <div className="quantity-controls">
                   <button
                     onClick={() => dispatch(decrementItem({ name: item.name }))}

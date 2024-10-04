@@ -36,8 +36,9 @@ const Dashboard = () => {
             <img src={`http://localhost:3000/uploads/${product.imageUrl}`} alt={product.name} />
             <p>{product.description}</p>
             <p>${product.price}</p>
+            <p>id: {product.id}</p>
             <button
-              onClick={() => dispatch(addItem({ name: product.name, price: product.price, imageUrl: product.imageUrl }))}
+              onClick={() => dispatch(addItem({ id : product.id, description: product.description, name: product.name, price: product.price, imageUrl: product.imageUrl,  }))}
               className="btn btn-primary"
             >
               Add to cart
