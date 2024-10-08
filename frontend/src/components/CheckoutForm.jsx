@@ -55,6 +55,7 @@ const PaymentForm = () => {
   };
 
   const handleSubmit = async (event) => {
+    
     event.preventDefault();
     setIsProcessing(true);
     setPaymentError(null);
@@ -81,16 +82,10 @@ const PaymentForm = () => {
       const orderId = localStorage.getItem('orderId');
       
       // Poll for order status update
-      let orderStatus = await checkOrderStatus(orderId);
-      let attempts = 0;
-      while (orderStatus !== 'completed' && attempts < 5) {
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait for 2 seconds
-        orderStatus = await checkOrderStatus(orderId);
-        attempts++;
-      }
+    
 
       setIsProcessing(false);
-      navigate('/success', { state: { orderId, orderStatus } });
+      navigate('/success', { state: { orderId } });
     }
   };
 

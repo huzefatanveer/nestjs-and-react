@@ -13,6 +13,7 @@ import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { OrderProduct } from './orders/entities/order-product.entity';
 import { RawBodyMiddleware } from './raw-body.middleware';
+//import { MailModule } from './mail/mail.module';
 
 
 
@@ -40,6 +41,7 @@ import { RawBodyMiddleware } from './raw-body.middleware';
     AuthModule,
     ProductsModule,
     OrdersModule,
+    //MailModule,
 
 
     // TypeOrmModule.forRoot({

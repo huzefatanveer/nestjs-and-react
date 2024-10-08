@@ -7,6 +7,7 @@ import { UsersModule } from 'src/users/users.module';
 import { Order } from './entities/order.entity';
 import { OrderProduct } from './entities/order-product.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { MailService } from '../mail/mail.service';
 
 @Module({
   imports: [
@@ -17,7 +18,7 @@ import { AuthModule } from 'src/auth/auth.module';
     
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [OrdersService, MailService],
   exports: [OrdersService], // Export OrdersService for use in other modules
 })
 export class OrdersModule {}

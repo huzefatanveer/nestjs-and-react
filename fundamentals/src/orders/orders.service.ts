@@ -24,7 +24,7 @@ export class OrdersService {
 
   async createOrder(createOrderDto: CreateOrderDto) {
     const { userId, products } = createOrderDto;
-    console.log('Creating order with user ID:', userId);
+  //  console.log('Creating order with user ID:', userId);
 
     // Calculate the total price
     const totalPrice = products.reduce(
@@ -84,17 +84,21 @@ export class OrdersService {
       throw new Error(`Error creating order: ${error.message}`);
     }
   }
-
-  async updateOrderStatus(paymentIntentId: string, status: string) {
+  async updateOrderStatus(orderId: string, status: string) {
+    this.logger.log(`Updating order status for Order ID: ${orderId}`);
     const order = await this.orderRepository.findOne({
-      where: { paymentIntentId },
+      where: { id: orderId },
     });
     if (order) {
       order.status = status;
-      return this.orderRepository.save(order);
+      const updatedOrder = await this.orderRepository.save(order);
+      this.logger.log(`Order ${order.id} status updated to ${status}`);
+      return updatedOrder;
     }
+    this.logger.error(`Order not found for Order ID: ${orderId}`);
     throw new Error('Order not found');
   }
+
 
   create(createOrderDto: CreateOrderDto) {
     return 'This action adds a new order';
