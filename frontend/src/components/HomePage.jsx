@@ -64,7 +64,7 @@ const HomePage = () => {
     content: {
       top: '50%',
       left: '50%',
-      right: 'auto',
+      right: '100%',
       bottom: 'auto',
       transform: 'translate(-50%, -50%)',
       padding: '20px',

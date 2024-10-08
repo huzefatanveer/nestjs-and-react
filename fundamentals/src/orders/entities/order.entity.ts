@@ -32,7 +32,7 @@ export class Order {
   @UpdateDateColumn()
   updatedAt: Date;
   
-  @Column({ type: 'enum', enum: ['pending', 'shipped', 'delivered', 'cancelled'], default: 'pending' })
+  @Column({ type: 'enum', enum: ['pending', 'paid', 'delivered', 'cancelled'], default: 'pending' })
   status: string;
   
   @Column()

@@ -72,10 +72,11 @@ export class OrdersService {
       );
 
       // Save all order products
-      await this.orderProductRepository.save(orderProducts);
-
+      const savedOrderProduct = await this.orderProductRepository.save(orderProducts);
+      //console.log(savedOrderProduct)
       return {
         order: savedOrder,
+        orderProduct: savedOrderProduct,
         paymentIntentId: paymentIntent.id,
         clientSecret: paymentIntent.client_secret,
       };

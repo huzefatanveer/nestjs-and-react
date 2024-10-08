@@ -9,9 +9,9 @@ export class JwtAuthGuard extends AuthGuard('jwt'){
       }
     
       handleRequest(err, user, info) {
-        console.log('JwtAuthGuard handleRequest - user:', user);
-        console.log('JwtAuthGuard handleRequest - err:', err);
-        console.log('JwtAuthGuard handleRequest - info:', info);
+        // console.log('JwtAuthGuard handleRequest - user:', user);
+        // console.log('JwtAuthGuard handleRequest - err:', err);
+        // console.log('JwtAuthGuard handleRequest - info:', info);
         if (err || !user) {
           throw err || new Error('User not found in JWT');
         }

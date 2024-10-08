@@ -53,26 +53,51 @@ export class OrdersController {
    // console.log('User ID to be passed:', createOrderDto.userId);
 
     // Pass the createOrderDto to the service
-    const { order, paymentIntentId, clientSecret } =
+    const { order,orderProduct, paymentIntentId, clientSecret } =
       await this.ordersService.createOrder(createOrderDto);
     
-    
+      const orderDetails = this.formatOrderDetails(order,orderProduct);
 
       console.log(user.email)
       const sentMail= await this.mailService.sendEmail(
       user.email, // User's email from JWT or payload
       'Order Confirmation',
-      `Your order has been placed successfully! Order ID: ${order.id}`,
-    );
-    console.log('sent mail:' ,sentMail)
+      orderDetails,
 
+      //`Your order has been placed successfully! Order ID: ${order.id}`,
+    );
+   // console.log('sent mail:' ,sentMail)
+    //console.log(orderProduct)
     return {
       success: true,
       orderId: order.id,
+      
       paymentIntentId: paymentIntentId,
       clientSecret: clientSecret, // Return the payment intent ID
     };
   }
+
+  private formatOrderDetails(order: any, orderProduct: any[]): string {
+    let orderSummary = `Thank you for your order! Here are your order details:\n\n`;
+    orderSummary += `Order ID: ${order.id}\n`;
+    orderSummary += `Order Date: ${order.createdAt}\n`;
+    orderSummary += `Products:\n`;
+  
+    // Loop through each orderProduct to append product details
+    orderProduct.forEach((product) => {
+      orderSummary += `Product Name: ${product.name}\n`;
+      orderSummary += `Quantity: ${product.quantity}\n`;
+      orderSummary += `Unit Price: $${product.unitPrice}\n`;
+
+      orderSummary += `Description: ${product.description}\n\n`;
+    });
+  
+    orderSummary += `\nTotal Amount: $${order.totalPrice}\n`;
+    orderSummary += `\nWe hope you enjoy your purchase!`;
+  
+    return orderSummary;
+  }
+  
 
   // Get all orders (Admin access, assuming role-based guards are in place)
   @UseGuards(JwtAuthGuard) // Add a specific guard for admin if necessary
@@ -124,6 +149,7 @@ export class OrdersController {
   async handleWebhook(
     @Req() req: RawBodyRequest<express.Request>,
     @Res() res: express.Response,
+    
   ) {
     console.log('receivded webhook:', req.body);
     const signature = req.headers['stripe-signature'];
@@ -142,7 +168,7 @@ export class OrdersController {
       this.logger.error(
         `Webhook signature verification failed: ${err.message}`,
       );
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+      return res.status(400).send(`error of webhook: ${err.message}`);
     }
 
     if (
@@ -158,7 +184,7 @@ export class OrdersController {
       }
 
       const newStatus =
-        event.type === 'payment_intent.succeeded' ? 'completed' : 'failed';
+        event.type === 'payment_intent.succeeded' ? 'paid' : 'failed';
 
       try {
         const updatedOrder = await this.ordersService.updateOrderStatus(

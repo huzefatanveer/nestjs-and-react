@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,7 +12,10 @@ import { MulterModule } from '@nestjs/platform-express';
 import { OrdersModule } from './orders/orders.module';
 import { Order } from './orders/entities/order.entity';
 import { OrderProduct } from './orders/entities/order-product.entity';
-import { RawBodyMiddleware } from './raw-body.middleware';
+//import { RawBodyMiddleware } from './raw-body.middleware';
+import { RawBodyMiddleware } from './middleware/raw-body.middleware';  // Import your RawBodyMiddleware
+import { JsonBodyMiddleware } from './middleware/json-body.middleware'; 
+
 //import { MailModule } from './mail/mail.module';
 
 
@@ -61,7 +64,14 @@ import { RawBodyMiddleware } from './raw-body.middleware';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(RawBodyMiddleware)
-      .forRoutes('orders/webhook'); // Apply to the webhook route
-  }
+    .apply(RawBodyMiddleware)
+    .forRoutes({
+      path: '/orders/webhook', // Adjusted to the correct webhook path for Stripe
+      method: RequestMethod.POST,
+    })
+    // Apply JsonBodyMiddleware globally for all routes
+    .apply(JsonBodyMiddleware)
+    .forRoutes('*');
+} // Apply to the webhook route
+  
  }
